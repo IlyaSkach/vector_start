@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Вариант 3 - Анимированная рамка</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<style>
+		:root {
+			--border-radius: 20px;
+			--border-width: 20px;
+			--border-color: #fff;
+			--menu-height: 50px;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			font-family: 'Avenir', sans-serif;
+		}
+
+		.back-button {
+			position: fixed;
+			top: 20px;
+			left: 20px;
+			z-index: 100000;
+			background: rgba(255, 255, 255, 0.9);
+			padding: 10px 20px;
+			border-radius: 5px;
+			text-decoration: none;
+			color: #333;
+			font-family: Arial, sans-serif;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+			transition: all 0.3s ease;
+		}
+
+		.back-button:hover {
+			background: white;
+			transform: translateY(-2px);
+		}
+
+		#border {
+			position: fixed;
+			z-index: 10000;
+			pointer-events: none;
+			top: calc(-1 * (var(--border-radius) + var(--border-width)) + var(--menu-height));
+			bottom: calc(-1 * var(--border-radius));
+			left: calc(-1 * var(--border-radius));
+			right: calc(-1 * var(--border-radius));
+			border-radius: calc(var(--border-width) + (2 * var(--border-radius)));
+			border: solid calc(var(--border-radius) + var(--border-width)) var(--border-color);
+			box-shadow: inset 0px 6px 12px rgba(0, 0, 0, .15);
+		}
+
+		#header {
+			position: fixed;
+			z-index: 20000;
+			top: 0;
+			width: 100%;
+			height: var(--menu-height);
+			line-height: var(--menu-height);
+			background: var(--border-color);
+			padding: 0;
+			font-size: 12px;
+			color: black;
+		}
+
+		#header ul {
+			margin: 0;
+			padding: 0;
+			height: var(--menu-height);
+			text-align: center;
+			text-transform: uppercase;
+		}
+
+		#header li {
+			list-style: none;
+			display: inline;
+			margin-right: 20px;
+		}
+
+		#header a {
+			padding: 10px;
+			text-decoration: none;
+			color: black;
+		}
+
+		#header li:after {
+			content: '/';
+			padding-left: 20px;
+			font-weight: bold;
+			color: red;
+		}
+
+		#header li:last-child {
+			margin: 0;
+		}
+
+		#header li:last-child:after {
+			content: '';
+			padding: 0;
+		}
+
+		.hero-section {
+			position: relative;
+			height: 100vh;
+			width: 100%;
+			overflow: hidden;
+			margin-top: var(--menu-height);
+		}
+
+		.hero-video {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			min-width: 100%;
+			min-height: 100%;
+			width: auto;
+			height: auto;
+			transform: translateX(-50%) translateY(-50%);
+			z-index: -1;
+		}
+
+		.hero-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.5);
+			z-index: 0;
+		}
+
+		.hero-content {
+			position: relative;
+			z-index: 1;
+			color: white;
+			text-align: center;
+			padding: 20px;
+			max-width: 800px;
+			margin: 0 auto;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+
+		.hero-content h2 {
+			font-size: 3.5em;
+			margin-bottom: 20px;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+		}
+
+		.hero-content p {
+			font-size: 1.5em;
+			line-height: 1.6;
+			margin-bottom: 30px;
+			text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+		}
+
+		.hero-button {
+			display: inline-block;
+			padding: 15px 30px;
+			background: rgba(255, 255, 255, 0.2);
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			border: 2px solid white;
+			font-size: 1.2em;
+			transition: all 0.3s ease;
+		}
+
+		.hero-button:hover {
+			background: white;
+			color: #333;
+		}
+
+		#content {
+			overflow: hidden;
+			margin: var(--menu-height) var(--border-width) 0 var(--border-width);
+			border-radius: 0 0 var(--border-radius) var(--border-radius);
+		}
+
+		#footer {
+			width: 100%;
+			height: var(--menu-height);
+			padding: 0;
+			background: var(--border-color);
+			color: black;
+			text-align: center;
+			position: relative;
+			z-index: 20000;
+		}
+
+		#footer p {
+			padding: 0;
+			margin: 0;
+			font-size: 12px;
+			line-height: var(--menu-height);
+		}
+
+		#footer-round-left,
+		#footer-round-right {
+			width: var(--border-radius);
+			height: var(--border-radius);
+			position: absolute;
+			top: calc(-1 * var(--border-radius));
+			overflow: hidden;
+		}
+
+		#footer-round-left span,
+		#footer-round-right span {
+			display: block;
+			position: absolute;
+			bottom: calc(-1 * (var(--border-radius) + var(--border-width)));
+			width: calc(2 * var(--border-radius));
+			height: calc(2 * var(--border-radius));
+			border-radius: calc(var(--border-width) + (2 * var(--border-radius)));
+			border: solid calc(var(--border-radius) + var(--border-width)) var(--border-color);
+		}
+
+		#footer-round-left {
+			left: var(--border-width);
+		}
+
+		#footer-round-left span {
+			left: calc(-1 * (var(--border-radius) + var(--border-width)));
+		}
+
+		#footer-round-right {
+			right: var(--border-width);
+			left: auto;
+		}
+
+		#footer-round-right span {
+			right: calc(-1 * (var(--border-radius) + var(--border-width)));
+			left: auto;
+		}
+
+		.content-section {
+			margin: 0;
+			padding: 30px;
+			background: #7444BA;
+			color: white;
+		}
+	</style>
+</head>
+
+<body>
+	<a href="index.html" class="back-button">← Назад к вариантам</a>
+
+	<div id="border"></div>
+
+	<div id="header">
+		<ul>
+			<li><a href="#">Главная</a></li>
+			<li><a href="#">Услуги</a></li>
+			<li><a href="#">Лицензии</a></li>
+			<li><a href="#">Новости</a></li>
+			<li><a href="#">Контакты</a></li>
+		</ul>
+	</div>
+
+	<div id="content">
+		<div class="hero-section">
+			<video class="hero-video" autoplay muted loop playsinline>
+				<source src="Image/video.mp4" type="video/mp4">
+			</video>
+			<div class="hero-overlay"></div>
+			<div class="hero-content">
+				<h2>Welcome to Vector</h2>
+				<p>Варианты с кнопками потом</p>
+				<a href="#" class="hero-button">Узнать больше</a>
+			</div>
+		</div>
+
+		<div class="content-section">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ullamcorper nisl accumsan mi tincidunt, id
+				placerat elit pretium. Maecenas non ligula diam. Quisque consequat dolor eget neque aliquet vehicula. Proin vel
+				odio euismod augue dignissim efficitur.</p>
+			<p>Vestibulum semper diam at tellus auctor finibus. Aliquam rhoncus at diam id luctus. Nullam et consectetur
+				nulla. Sed tempus nibh in ipsum mattis, non maximus dolor vulputate. Morbi sodales est tortor. Cras nec mauris
+				pulvinar, placerat eros ac, eleifend quam.</p>
+		</div>
+	</div>
+
+	<div id="footer">
+		<p>&copy; 2025 Vector. All rights reserved.</p>
+		<div id="footer-round-left">
+			<span></span>
+		</div>
+		<div id="footer-round-right">
+			<span></span>
+		</div>
+	</div>
+</body>
+
+</html>
