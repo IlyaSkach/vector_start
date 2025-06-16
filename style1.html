@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Стиль 1 - Анимированная рамка</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<style>
+		:root {
+			--border-radius: 20px;
+			--border-width: 20px;
+			--menu-height: 50px;
+
+			/* Theme 1: Классическая государственная */
+			--border-color: #F2F2F2;
+			--header-bg: #002F6C;
+			--header-text: white;
+			--hero-bg: #F2F2F2;
+			--content-bg: #F2F2F2;
+			--content-text: #333333;
+			--footer-bg: #002F6C;
+			--footer-text: white;
+			--link-color: white;
+			--link-hover-color: #BDC3C7;
+			--separator-color: #C62828;
+		}
+
+		/* Theme 2: На базе логотипа + гос-нейтральность */
+		body.theme-2 {
+			--border-color: #FAFAFA;
+			--header-bg: #F57C00;
+			--header-text: white;
+			--hero-bg: #FAFAFA;
+			--content-bg: #FAFAFA;
+			--content-text: #212121;
+			--footer-bg: #0097A7;
+			--footer-text: white;
+			--link-color: white;
+			--link-hover-color: #e0e0e0;
+			--separator-color: #689F38;
+		}
+
+		/* Theme 3: Современный гос-портал */
+		body.theme-3 {
+			--border-color: #E0E0E0;
+			--header-bg: #1A237E;
+			--header-text: white;
+			--hero-bg: #E0E0E0;
+			--content-bg: #FFFFFF;
+			--content-text: #333333;
+			--footer-bg: #1A237E;
+			--footer-text: white;
+			--link-color: white;
+			--link-hover-color: #cccccc;
+			--separator-color: #B71C1C;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			font-family: 'Avenir', sans-serif;
+			background: var(--hero-bg);
+		}
+
+		.back-button {
+			position: fixed;
+			top: 50%;
+			left: 20px;
+			transform: translateY(-50%);
+			z-index: 100000;
+			background: rgba(255, 255, 255, 0.9);
+			padding: 10px 20px;
+			border-radius: 5px;
+			text-decoration: none;
+			color: var(--link-color);
+			font-family: Arial, sans-serif;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+			transition: all 0.3s ease;
+		}
+
+		.back-button:hover {
+			background: white;
+			transform: translateY(-50%) translateX(5px);
+		}
+
+		#border {
+			position: fixed;
+			z-index: 10000;
+			pointer-events: none;
+			top: calc(-1 * (var(--border-radius) + var(--border-width)) + var(--menu-height));
+			bottom: calc(-1 * var(--border-radius));
+			left: calc(-1 * var(--border-radius));
+			right: calc(-1 * var(--border-radius));
+			border-radius: calc(var(--border-width) + (2 * var(--border-radius)));
+			border: solid calc(var(--border-radius) + var(--border-width)) var(--border-color);
+			box-shadow: inset 0px 6px 12px rgba(0, 0, 0, .15);
+		}
+
+		#header {
+			position: fixed;
+			z-index: 20000;
+			top: 0;
+			width: 100%;
+			height: var(--menu-height);
+			line-height: var(--menu-height);
+			background: var(--header-bg);
+			padding: 0;
+			font-size: 12px;
+			color: var(--header-text);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.header-logo {
+			position: absolute;
+			height: 80px;
+			top: 82%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 20001;
+		}
+
+		.header-logo img {
+			height: 100%;
+			width: auto;
+		}
+
+		#header ul {
+			margin: 0;
+			padding: 0;
+			height: var(--menu-height);
+			text-align: center;
+			text-transform: uppercase;
+			display: flex;
+			justify-content: center;
+			gap: 40px;
+		}
+
+		#header li {
+			list-style: none;
+			display: inline;
+			position: relative;
+		}
+
+		#header li:nth-child(2) {
+			margin-right: 100px;
+		}
+
+		#header li:nth-child(3) {
+			margin-left: 100px;
+		}
+
+		#header a {
+			padding: 10px;
+			text-decoration: none;
+			color: var(--link-color);
+		}
+
+		#header li:after {
+			content: '/';
+			padding-left: 20px;
+			font-weight: bold;
+			color: var(--separator-color);
+		}
+
+		#header li:last-child {
+			margin: 0;
+		}
+
+		#header li:last-child:after {
+			content: '';
+			padding: 0;
+		}
+
+		.hero-section {
+			position: relative;
+			height: 100vh;
+			width: 100%;
+			overflow: hidden;
+			margin-top: var(--menu-height);
+			background: var(--hero-bg);
+		}
+
+		.hero-video {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			min-width: 100%;
+			min-height: 100%;
+			width: auto;
+			height: auto;
+			transform: translateX(-50%) translateY(-50%);
+			z-index: 0;
+		}
+
+		.hero-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.5);
+			z-index: 1;
+		}
+
+		#content {
+			overflow: hidden;
+			margin: var(--menu-height) var(--border-width) 0 var(--border-width);
+			border-radius: 0 0 var(--border-radius) var(--border-radius);
+		}
+
+		#footer {
+			width: 100%;
+			height: var(--menu-height);
+			padding: 0;
+			background: var(--footer-bg);
+			color: var(--footer-text);
+			text-align: center;
+			position: relative;
+			z-index: 20000;
+		}
+
+		#footer p {
+			padding: 0;
+			margin: 0;
+			font-size: 12px;
+			line-height: var(--menu-height);
+		}
+
+		#footer-round-left,
+		#footer-round-right {
+			width: var(--border-radius);
+			height: var(--border-radius);
+			position: absolute;
+			top: calc(-1 * var(--border-radius));
+			overflow: hidden;
+		}
+
+		#footer-round-left span,
+		#footer-round-right span {
+			display: block;
+			position: absolute;
+			bottom: calc(-1 * (var(--border-radius) + var(--border-width)));
+			width: calc(2 * var(--border-radius));
+			height: calc(2 * var(--border-radius));
+		}
+
+		#footer-round-left {
+			left: var(--border-width);
+		}
+
+		#footer-round-left span {
+			left: calc(-1 * (var(--border-radius) + var(--border-width)));
+		}
+
+		#footer-round-right {
+			right: var(--border-width);
+			left: auto;
+		}
+
+		#footer-round-right span {
+			right: calc(-1 * (var(--border-radius) + var(--border-width)));
+			left: auto;
+		}
+
+		.content-section {
+			margin: 0;
+			padding: 30px;
+			background: var(--content-bg);
+			color: var(--content-text);
+		}
+
+		.image-gallery-section {
+			padding: 40px;
+			background: var(--hero-bg);
+			color: var(--header-text);
+			text-align: center;
+		}
+
+		.image-gallery {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 30px;
+			margin-top: 30px;
+		}
+
+		.gallery-item {
+			background: var(--header-bg);
+			padding: 15px;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			text-align: center;
+			transition: transform 0.3s ease;
+			color: var(--header-text);
+		}
+
+		.gallery-item:hover {
+			transform: translateY(-5px);
+		}
+
+		.gallery-item img {
+			max-width: 100%;
+			height: auto;
+			border-radius: 5px;
+			margin-bottom: 10px;
+		}
+
+		.gallery-item p {
+			font-size: 0.9em;
+			color: var(--header-text);
+			margin: 0;
+		}
+
+		/* Responsive adjustments for smaller screens */
+		@media (max-width: 768px) {
+			.image-gallery {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.theme-switcher {
+			position: fixed;
+			top: 50%;
+			right: 20px;
+			transform: translateY(-50%);
+			z-index: 20002;
+			background: rgba(255, 255, 255, 0.9);
+			padding: 10px;
+			border-radius: 5px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		}
+
+		.theme-switcher select {
+			padding: 5px;
+			border-radius: 3px;
+			border: 1px solid #ccc;
+			background: white;
+			cursor: pointer;
+		}
+
+		/* Styles for Animated Infographics */
+		.infographic-section {
+			padding: 60px 20px;
+			background: var(--footer-bg);
+			color: var(--footer-text);
+			text-align: center;
+		}
+
+		.infographic-section h2 {
+			font-size: 36px;
+			margin-bottom: 40px;
+			color: var(--footer-text);
+		}
+
+		.infographic-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 40px;
+			max-width: 1000px;
+			margin: 0 auto;
+		}
+
+		.infographic-item {
+			background: var(--header-bg);
+			padding: 30px;
+			border-radius: 10px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+			color: var(--header-text);
+		}
+
+		.infographic-circle {
+			width: 120px;
+			height: 120px;
+			border-radius: 50%;
+			border: 8px solid var(--separator-color);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto 20px auto;
+			font-size: 2.5em;
+			font-weight: bold;
+			color: var(--separator-color);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.infographic-circle::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: 50%;
+			background: var(--content-bg);
+			opacity: 0.2;
+			z-index: -1;
+		}
+
+		.infographic-item h3 {
+			font-size: 1.5em;
+			margin-bottom: 10px;
+			color: var(--header-text);
+		}
+
+		.infographic-item p {
+			font-size: 0.9em;
+			color: var(--header-text);
+		}
+
+		@media (max-width: 768px) {
+			.infographic-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		/* Styles for Three-Column Text */
+		.text-columns {
+			column-count: 3;
+			column-gap: 30px;
+			margin-top: 20px;
+			text-align: justify;
+		}
+
+		.text-columns p {
+			margin-bottom: 1em;
+			/* Add some spacing between paragraphs in columns */
+		}
+
+		@media (max-width: 992px) {
+			.text-columns {
+				column-count: 2;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.text-columns {
+				column-count: 1;
+			}
+		}
+
+		/* Styles for Call-to-Action Section */
+		.call-to-action-section {
+			padding: 60px 20px;
+			background: var(--hero-bg);
+			color: var(--header-text);
+			text-align: center;
+			margin-top: 40px;
+		}
+
+		.call-to-action-section h2 {
+			font-size: 36px;
+			margin-bottom: 20px;
+			color: var(--header-text);
+		}
+
+		.call-to-action-section p {
+			font-size: 1.1em;
+			line-height: 1.6;
+			max-width: 800px;
+			margin: 0 auto 30px auto;
+			color: var(--header-text);
+		}
+
+		.combined-btn {
+			display: inline-block;
+			width: 200px;
+			/* Adjust width as needed */
+			height: 50px;
+			/* Adjust height as needed */
+			line-height: 50px;
+			padding: 0;
+			border: none;
+			border-radius: 5px;
+			font-size: 1.2em;
+			font-weight: bold;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			color: var(--content-bg);
+			/* Use content-bg for text color for contrast */
+			background: transparent;
+			/* Background will be handled by spans */
+			/* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+			position: relative;
+			perspective: 230px;
+			/* For 3D effect */
+			z-index: 1;
+		}
+
+		.combined-btn span {
+			display: block;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			box-shadow: 7px 7px 20px 0px rgba(0, 0, 0, .1),
+				4px 4px 5px 0px rgba(0, 0, 0, .1);
+			border-radius: 5px;
+			margin: 0;
+			text-align: center;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			transition: all .3s;
+			backface-visibility: hidden;
+			/* Hide back face when rotated */
+			overflow: hidden;
+			/* Important for shine effect */
+		}
+
+		.combined-btn span::before {
+			content: '';
+			position: absolute;
+			display: inline-block;
+			top: -180px;
+			left: 0;
+			width: 30px;
+			height: 250%;
+			/* Make it long enough to cover the button diagonally */
+			background-color: rgba(255, 255, 255, 0.3);
+			/* Semi-transparent white shine */
+			transform: rotate(45deg);
+			/* Diagonal angle */
+			animation: shiny-btn1 3s ease-in-out infinite;
+			z-index: 2;
+			/* Ensure it's above the span background */
+		}
+
+		.combined-btn span:nth-child(1) {
+			background: linear-gradient(0deg, var(--separator-color) 0%, var(--link-hover-color) 100%);
+			color: var(--content-bg);
+			transform: rotateX(0deg);
+			transform-origin: 50% 50% -25px;
+		}
+
+		.combined-btn span:nth-child(2) {
+			background: linear-gradient(0deg, var(--link-hover-color) 0%, var(--separator-color) 100%);
+			color: var(--content-bg);
+			transform: rotateX(90deg);
+			transform-origin: 50% 50% -25px;
+		}
+
+		.combined-btn:hover span:nth-child(1) {
+			transform: rotateX(-90deg);
+			box-shadow: none;
+			/* Remove shadow on hover for a cleaner flip */
+		}
+
+		.combined-btn:hover span:nth-child(2) {
+			transform: rotateX(0deg);
+			box-shadow: none;
+			/* Remove shadow on hover for a cleaner flip */
+		}
+
+		/* Remove previous hover effects that conflict */
+		.combined-btn:hover {
+			transform: translateY(0px);
+			box-shadow: none;
+			color: var(--content-bg);
+			/* Reset text color for outer button */
+		}
+
+		/* Remove previous ::before shine effect */
+		.combined-btn::before {
+			display: none;
+		}
+
+		@-webkit-keyframes shiny-btn1 {
+			0% {
+				-webkit-transform: scale(0) rotate(45deg);
+				opacity: 0;
+			}
+
+			80% {
+				-webkit-transform: scale(0) rotate(45deg);
+				opacity: 0.5;
+			}
+
+			81% {
+				-webkit-transform: scale(4) rotate(45deg);
+				opacity: 1;
+			}
+
+			100% {
+				-webkit-transform: scale(50) rotate(45deg);
+				opacity: 0;
+			}
+		}
+
+		@keyframes shiny-btn1 {
+			0% {
+				transform: scale(0) rotate(45deg);
+				opacity: 0;
+			}
+
+			80% {
+				transform: scale(0) rotate(45deg);
+				opacity: 0.5;
+			}
+
+			81% {
+				transform: scale(4) rotate(45deg);
+				opacity: 1;
+			}
+
+			100% {
+				transform: scale(50) rotate(45deg);
+				opacity: 0;
+			}
+		}
+	</style>
+</head>
+
+<body class="theme-1">
+	<a href="index.html" class="back-button">← Назад</a>
+
+	<div class="theme-switcher">
+		<select id="themeSelect" onchange="changeTheme(this.value)">
+			<option value="theme-1">Классическая государственная</option>
+			<option value="theme-2">На базе логотипа</option>
+			<option value="theme-3">Современный гос-портал</option>
+		</select>
+	</div>
+
+	<div id="border"></div>
+
+	<header id="header">
+		<div class="header-logo">
+			<img src="Image/vector_new.png" alt="Vector Logo">
+		</div>
+		<ul>
+			<li><a href="#">Главная</a></li>
+			<li><a href="#">О нас</a></li>
+			<li><a href="#">Услуги</a></li>
+			<li><a href="#">Контакты</a></li>
+		</ul>
+	</header>
+
+	<div class="hero-section">
+		<video class="hero-video" autoplay muted loop playsinline>
+			<source src="Image/video.mp4" type="video/mp4">
+		</video>
+		<div class="hero-overlay"></div>
+	</div>
+
+	<div id="content">
+		<div class="content-section">
+			<h2>Добро пожаловать</h2>
+			<p>Это первый вариант стиля сайта с рамкой и центрированным логотипом.</p>
+		</div>
+
+		<!-- New content section for images -->
+		<div class="content-section image-gallery-section">
+			<h2>Примеры визуального контента</h2>
+			<div class="image-gallery">
+				<div class="gallery-item">
+					<img src="Image/DSC09618.jpg" alt="Изображение 1">
+					<p>Описание изображения 1</p>
+				</div>
+				<div class="gallery-item">
+					<img src="Image/FXMN1091.jpg" alt="Изображение 2">
+					<p>Описание изображения 2</p>
+				</div>
+				<div class="gallery-item">
+					<img src="Image/FXMN1102.jpg" alt="Изображение 3">
+					<p>Описание изображения 3</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="content-section">
+			<h2>Дополнительный блок контента</h2>
+			<p>Здесь может быть любой другой текстовый контент, который поможет оценить читаемость текста на выбранной
+				цветовой схеме.</p>
+			<div class="text-columns">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
+					magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+					pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+					est
+					laborum.</p>
+				<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+					Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
+					magna aliqua.</p>
+			</div>
+		</div>
+
+		<!-- New content section for animated infographics -->
+		<div class="content-section infographic-section">
+			<h2>Наши показатели</h2>
+			<div class="infographic-grid">
+				<div class="infographic-item">
+					<div class="infographic-circle" data-percentage="85">
+						<span class="infographic-number">0%</span>
+					</div>
+					<h3>Успешность проектов</h3>
+					<p>85% выполненных проектов в срок</p>
+				</div>
+				<div class="infographic-item">
+					<div class="infographic-circle" data-percentage="92">
+						<span class="infographic-number">0%</span>
+					</div>
+					<h3>Удовлетворенность клиентов</h3>
+					<p>92% клиентов довольны услугами</p>
+				</div>
+				<div class="infographic-item">
+					<div class="infographic-circle" data-percentage="70">
+						<span class="infographic-number">0%</span>
+					</div>
+					<h3>Рост за год</h3>
+					<p>70% роста по сравнению с прошлым годом</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- New content section with text and combined button -->
+		<div class="content-section call-to-action-section">
+			<h2>Готовы начать сотрудничество?</h2>
+			<p>Наш опыт и профессионализм к вашим услугам. Свяжитесь с нами, чтобы узнать больше о наших сертификационных
+				решениях.</p>
+			<button class="combined-btn"><span>Связаться с нами</span><span>Нажмите здесь!</span></button>
+		</div>
+
+	</div>
+
+	<footer id="footer">
+		<div id="footer-round-left"><span></span></div>
+		<div id="footer-round-right"><span></span></div>
+		<p>© 2024 Vector Header. Все права защищены.</p>
+	</footer>
+
+	<script>
+		function changeTheme(theme) {
+			document.body.className = theme;
+		}
+	</script>
+</body>
+
+</html>
